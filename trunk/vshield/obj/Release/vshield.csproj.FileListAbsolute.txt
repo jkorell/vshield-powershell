@@ -1,0 +1,6 @@
+C:\Users\jcallen\documents\visual studio 2010\Projects\vshield\vshield\obj\Release\ResolveAssemblyReference.cache
+C:\Users\jcallen\documents\visual studio 2010\Projects\vshield\vshield\bin\Release\vshield.dll
+C:\Users\jcallen\documents\visual studio 2010\Projects\vshield\vshield\bin\Release\vshield.pdb
+C:\Users\jcallen\documents\visual studio 2010\Projects\vshield\vshield\bin\Release\RestSharp.dll
+C:\Users\jcallen\documents\visual studio 2010\Projects\vshield\vshield\obj\Release\vshield.dll
+C:\Users\jcallen\documents\visual studio 2010\Projects\vshield\vshield\obj\Release\vshield.pdb
