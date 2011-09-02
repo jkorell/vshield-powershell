@@ -35,4 +35,4 @@ namespace vshield
 //Add-PSSnapin vshieldsnapin
 //$connect = Connect-VShield -Server "https://10.53.2.103" -User "admin" -Password "default"
 //$firewallRules = Get-FirewallRule -Client $connect -InternalPortGroupMofId "dvportgroup-2735"
-//Set-FirewallRule -Client $connect -InternalPortGroupMofId "dvportgroup-2735" -DstIp "10.53.2.246" -DstPort "445" -SrcIp "any" -SrcPort "any" -Action "allow" -Direction "both" -Protocol "tcp" -FirewallRules $firewallRules
+//Set-FirewallRule -Client $connect -InternalPortGroupMofId "dvportgroup-2735" -DstIp "10.53.2.1-10.53.2.254" -DstPort "80" -SrcIp "any" -SrcPort "any" -Action "allow" -Direction "both" -Protocol "tcp" -FirewallRules $firewallRules

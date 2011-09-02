@@ -34,7 +34,7 @@ namespace vshield
         public class IpInfo
         {
             public String ipAddress { get; set; }
-            public IpRange ipRange { get; set; }
+            public IpRange IpRange { get; set; }
         }
         public class IpRange
         {
@@ -44,7 +44,7 @@ namespace vshield
         public class PortInfo
         {
             public String port { get; set; }
-            public PortRange portRange { get; set; }
+            public PortRange PortRange { get; set; }
         }
         public class PortRange
         {
