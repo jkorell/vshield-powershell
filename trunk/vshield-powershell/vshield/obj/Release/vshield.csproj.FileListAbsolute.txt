@@ -1,0 +1,10 @@
+C:\Users\jcallen\Documents\vshield\vshield-powershell\vshield\bin\Release\vshield.dll
+C:\Users\jcallen\Documents\vshield\vshield-powershell\vshield\bin\Release\vshield.pdb
+C:\Users\jcallen\Documents\vshield\vshield-powershell\vshield\obj\Release\ResolveAssemblyReference.cache
+C:\Users\jcallen\Documents\vshield\vshield-powershell\vshield\obj\Release\vshield.dll
+C:\Users\jcallen\Documents\vshield\vshield-powershell\vshield\obj\Release\vshield.pdb
+C:\dev\vshield\vshield-powershell\vshield\bin\Release\vshield.dll
+C:\dev\vshield\vshield-powershell\vshield\bin\Release\vshield.pdb
+C:\dev\vshield\vshield-powershell\vshield\obj\Release\ResolveAssemblyReference.cache
+C:\dev\vshield\vshield-powershell\vshield\obj\Release\vshield.dll
+C:\dev\vshield\vshield-powershell\vshield\obj\Release\vshield.pdb
