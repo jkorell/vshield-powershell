@@ -147,11 +147,71 @@ namespace vshield
             fwconf.FirewallConfig[count-1].action = _Action;
             fwconf.FirewallConfig[count-1].direction = _Direction;
             fwconf.FirewallConfig[count-1].protocol = _Protocol;
-            fwconf.FirewallConfig[count-1].destinationIpAddress.ipAddress = _DstIp;
-            fwconf.FirewallConfig[count-1].destinationPort.port = _DstPort;
-            fwconf.FirewallConfig[count-1].sourceIpAddress.ipAddress = _SrcIp;
-            fwconf.FirewallConfig[count-1].sourcePort.port = _SrcPort;
+
+
+            string[] dstIpArray = ParseRange(_DstIp);
+            string[] dstPortArray = ParseRange(_DstPort);
+            string[] srcIpArray = ParseRange(_SrcIp);
+            string[] srcPortArray = ParseRange(_SrcPort);
+
+
+            if (dstIpArray.Length > 1)
+            {
+                fwconf.FirewallConfig[count - 1].destinationIpAddress.IpRange = new IpRange();
+                fwconf.FirewallConfig[count - 1].destinationIpAddress.IpRange.rangeStart = dstIpArray[0];
+                fwconf.FirewallConfig[count - 1].destinationIpAddress.IpRange.rangeEnd = dstIpArray[1];
+            }
+            else
+            {
+                fwconf.FirewallConfig[count - 1].destinationIpAddress.ipAddress = _DstIp;
+            }
+
+            if (dstPortArray.Length > 1)
+            {
+                fwconf.FirewallConfig[count - 1].destinationPort.PortRange = new PortRange();
+                fwconf.FirewallConfig[count - 1].destinationPort.PortRange.rangeStart = dstPortArray[0];
+                fwconf.FirewallConfig[count - 1].destinationPort.PortRange.rangeEnd = dstPortArray[1];
+            }
+            else
+            {
+                fwconf.FirewallConfig[count - 1].destinationPort.port = _DstPort;
+            }
+
+            if (srcIpArray.Length > 1)
+            {
+                fwconf.FirewallConfig[count - 1].sourceIpAddress.IpRange = new IpRange();
+                fwconf.FirewallConfig[count - 1].sourceIpAddress.IpRange.rangeStart = srcIpArray[0];
+                fwconf.FirewallConfig[count - 1].sourceIpAddress.IpRange.rangeEnd = srcIpArray[1];
+            }
+            else
+            {
+                fwconf.FirewallConfig[count - 1].sourceIpAddress.ipAddress = _SrcIp;
+            }
+
+            if (srcPortArray.Length > 1)
+            {
+                fwconf.FirewallConfig[count - 1].sourcePort.PortRange = new PortRange();
+                fwconf.FirewallConfig[count - 1].sourcePort.PortRange.rangeStart = srcPortArray[0];
+                fwconf.FirewallConfig[count - 1].sourcePort.PortRange.rangeEnd = srcPortArray[1];
+            }
+            else
+            {
+                fwconf.FirewallConfig[count - 1].sourcePort.port = _SrcPort;
+            }
+
             return fwconf;
+        }
+
+        private string[] ParseRange(string range)
+        {
+
+            string[] bufArray;
+            if (range.Contains('-'))
+            {
+                bufArray = range.Split(new char[] { ' ', '-' });
+                return new string[] { bufArray[0], bufArray[bufArray.Length - 1] };
+            }
+            return new string[] { range };
         }
 
         protected override void ProcessRecord()
@@ -170,13 +230,15 @@ namespace vshield
                 requestResource.AppendFormat("api/1.0/network/{0}/firewall/rules", _InternalPortGroupMofId);
                 var request = new RestRequest(Method.POST);
                 request.Resource = requestResource.ToString();
-
+                
                 request.AddParameter("application/xml", xmlString, ParameterType.RequestBody);
 
                 var rr_fwrule = _Client.Execute(request);
-                WriteDebug(rr_fwrule.ErrorMessage);
-                WriteDebug(rr_fwrule.StatusDescription);
-                WriteDebug(rr_fwrule.Content);
+
+                WriteObject(xmlString);
+                WriteWarning(rr_fwrule.ErrorMessage);
+                WriteWarning(rr_fwrule.StatusDescription);
+                WriteWarning(rr_fwrule.Content);
 
                 
             }
@@ -184,6 +246,11 @@ namespace vshield
             {
                 WriteObject("C-Sharp Exception: " + e);
             }
+        }
+
+        private void WriteDebug(VShieldXmlSerialzation xmlSerial)
+        {
+            throw new NotImplementedException();
         }
     }
 }
