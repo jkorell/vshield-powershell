@@ -27,11 +27,12 @@ namespace vshield
 
         public override string Vendor
         {
-            get { return "CSC"; }
+            get { return "Vendor"; }
         }
     }
-
-
-    
-
 }
+
+//Add-PSSnapin vshieldsnapin
+//$connect = Connect-VShield -Server "https://10.53.2.103" -User "admin" -Password "default"
+//$firewallRules = Get-FirewallRule -Client $connect -InternalPortGroupMofId "dvportgroup-2735"
+//Set-FirewallRule -Client $connect -InternalPortGroupMofId "dvportgroup-2735" -DstIp "10.53.2.246" -DstPort "445" -SrcIp "any" -SrcPort "any" -Action "allow" -Direction "both" -Protocol "tcp" -FirewallRules $firewallRules
