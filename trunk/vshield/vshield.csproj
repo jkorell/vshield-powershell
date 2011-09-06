@@ -55,6 +55,7 @@
     <Compile Include="GetFirewallRule.cs" />
     <Compile Include="GetNatRule.cs" />
     <Compile Include="SetFirewallRule.cs" />
+    <Compile Include="SetNatRule.cs" />
     <Compile Include="vshield.cs">
       <SubType>Component</SubType>
     </Compile>
