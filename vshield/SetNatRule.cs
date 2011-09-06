@@ -145,12 +145,9 @@ namespace vshield
 
             if (intIpArray.Length > 1)
             {
-
-
                 vsec.NATConfig[count - 1].internalIpAddress.IpRange = new IpRange();
                 vsec.NATConfig[count - 1].internalIpAddress.IpRange.rangeStart = intIpArray[0];
                 vsec.NATConfig[count - 1].internalIpAddress.IpRange.rangeEnd = intIpArray[1];
-
             }
             else
             {
@@ -216,7 +213,6 @@ namespace vshield
         {
             try
             {
-
                 StringBuilder requestResource = new StringBuilder();
                 VShieldXmlSerialzation xmlSerial = new VShieldXmlSerialzation();
                 var request = new RestRequest(Method.POST);
