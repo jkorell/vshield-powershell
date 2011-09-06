@@ -13,17 +13,22 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace vshield
 {
-
+    /// <summary>
+    /// Set-FirewallRule CmdLet
+    /// </summary>
     [Cmdlet("Set", "FirewallRule")]
     public class SetFirewallRule : Cmdlet
     {
-
+        /// <summary>
+        /// SetCertificatePolicy()
+        /// RemoteCertiticateValidate() 
+        /// Allows any SSL certificate to be used.
+        /// From the web, don't have the URL.
+        /// </summary>
         public static void SetCertificatePolicy()
         {
             ServicePointManager.ServerCertificateValidationCallback += RemoteCertificateValidate;
         }
-
-
         private static bool RemoteCertificateValidate(object sender, X509Certificate cert, X509Chain chain, SslPolicyErrors error)
         {
             return true;
@@ -31,6 +36,7 @@ namespace vshield
 
         private RestClient _Client;
         [Parameter(Position = 0, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
         public RestClient Client
         {
             get { return _Client; }
@@ -39,6 +45,7 @@ namespace vshield
 
         private string _InternalPortGroupMofId;
         [Parameter(Position = 1, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
         public string InternalPortGroupMofId
         {
             get { return _InternalPortGroupMofId; }
@@ -47,6 +54,7 @@ namespace vshield
 
         private string _DstIp;
         [Parameter(Position = 2, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
         public string DstIp
         {
             get { return _DstIp; }
@@ -55,6 +63,7 @@ namespace vshield
 
         private string _DstPort;
         [Parameter(Position = 3, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
         public string DstPort
         {
             get { return _DstPort; }
@@ -63,6 +72,7 @@ namespace vshield
 
         private string _SrcIp;
         [Parameter(Position = 4, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
         public string SrcIp
         {
             get { return _SrcIp; }
@@ -71,6 +81,7 @@ namespace vshield
 
         private string _SrcPort;
         [Parameter(Position = 5, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
         public string SrcPort
         {
             get { return _SrcPort; }
@@ -79,6 +90,7 @@ namespace vshield
 
         private string _Action;
         [Parameter(Position = 6, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
         public string Action
         {
             get { return _Action; }
@@ -86,6 +98,7 @@ namespace vshield
         }
         private string _Direction;
         [Parameter(Position = 7, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
         public string Direction
         {
             get { return _Direction; }
@@ -93,6 +106,7 @@ namespace vshield
         }
         private string _Protocol;
         [Parameter(Position = 8, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
         public string Protocol
         {
             get { return _Protocol; }
@@ -101,6 +115,7 @@ namespace vshield
 
         private VShieldEdgeConfig _FirewallRules;
         [Parameter(Position = 9, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
         public VShieldEdgeConfig FirewallRules
         {
             get { return _FirewallRules; }
@@ -108,12 +123,12 @@ namespace vshield
         }
 
 
-
+        /// <summary>
+        /// InitObject: Initializes the VShieldEdgeConfig object.
+        /// </summary>
+        /// <returns>VShieldEdgeConfig</returns>
         private VShieldEdgeConfig InitObject()
         {
-            //Are there rules in the existing config?
-            
-
             VShieldEdgeConfig vsec = new VShieldEdgeConfig();
             FirewallConfig fwconf = new FirewallConfig();
             FirewallRule fwrule = new FirewallRule();
@@ -140,6 +155,10 @@ namespace vshield
                 return vsec;
             }
         }
+        /// <summary>
+        /// SetObject: Sets the values to the objects in the VShieldEdgeConfig.
+        /// </summary>
+        /// <returns>VShieldEdgeConfig</returns>
         private VShieldEdgeConfig SetObject()
         {
             VShieldEdgeConfig fwconf = InitObject();
@@ -201,7 +220,12 @@ namespace vshield
 
             return fwconf;
         }
-
+        /// <summary>
+        /// ParseRange()
+        /// If a paramater is returned with '-' extract the IP Addresses.
+        /// </summary>
+        /// <param name="range"></param>
+        /// <returns>string[]</returns>
         private string[] ParseRange(string range)
         {
 
@@ -214,38 +238,31 @@ namespace vshield
             return new string[] { range };
         }
 
+        /// <summary>
+        /// Main section of Set-FirewallRule
+        /// </summary>
         protected override void ProcessRecord()
         {
             try
             {
-                SetCertificatePolicy();
+                StringBuilder requestResource       = new StringBuilder();
+                VShieldXmlSerialzation xmlSerial    = new VShieldXmlSerialzation();
+                var request                         = new RestRequest(Method.POST);
+                SetCertificatePolicy();             
                 
+                string xmlString                    = xmlSerial.SerializeObject(SetObject());
                 
-                VShieldXmlSerialzation xmlSerial = new VShieldXmlSerialzation();
-
-                string xmlString = xmlSerial.SerializeObject(SetObject());
-
-
-                StringBuilder requestResource = new StringBuilder();
                 requestResource.AppendFormat("api/1.0/network/{0}/firewall/rules", _InternalPortGroupMofId);
-                var request = new RestRequest(Method.POST);
-                request.Resource = requestResource.ToString();
-                
+                request.Resource                    = requestResource.ToString();
                 request.AddParameter("application/xml", xmlString, ParameterType.RequestBody);
+                var rr_fwrule                       = _Client.Execute(request);
 
-                var rr_fwrule = _Client.Execute(request);
-
-                WriteObject(xmlString);
+                //WriteObject(xmlString);
                 WriteWarning(rr_fwrule.ErrorMessage);
                 WriteWarning(rr_fwrule.StatusDescription);
                 WriteWarning(rr_fwrule.Content);
-
-                
             }
-            catch (Exception e)
-            {
-                WriteObject("C-Sharp Exception: " + e);
-            }
+            catch (Exception e) { WriteObject("C-Sharp Exception: " + e); }
         }
 
         private void WriteDebug(VShieldXmlSerialzation xmlSerial)
