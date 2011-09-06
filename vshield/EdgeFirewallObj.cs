@@ -44,8 +44,6 @@ namespace vshield
             public UInt32 ruleId { get; set; }
 
         }
-
-
         public class IpInfo
         {
             public String ipAddress { get; set; }
@@ -66,11 +64,4 @@ namespace vshield
             public String rangeStart { get; set; }
             public String rangeEnd { get; set; }
         }
-
-       
-
-
-
-
-
 }
