@@ -53,6 +53,7 @@
     <Compile Include="ConnectVshield.cs" />
     <Compile Include="EdgeFirewallObj.cs" />
     <Compile Include="GetFirewallRule.cs" />
+    <Compile Include="GetNatRule.cs" />
     <Compile Include="SetFirewallRule.cs" />
     <Compile Include="vshield.cs">
       <SubType>Component</SubType>

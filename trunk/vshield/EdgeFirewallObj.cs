@@ -14,9 +14,22 @@ namespace vshield
         public class VShieldEdgeConfig
         {
             public FirewallConfig FirewallConfig { get; set; }
+            public NATConfig NATConfig { get; set; }
         }
 
         public class FirewallConfig : List<FirewallRule> { }
+        public class NATConfig : List<NATRule> { }
+
+        public class NATRule
+        {
+            public string protocol { get; set; }
+            public string icmpType { get; set; }
+            public IpInfo internalIpAddress { get; set; }
+            public PortInfo internalPort { get; set; }
+            public IpInfo externalIpAddress { get; set; }
+            public PortInfo externalPort { get; set; }
+            public bool log { get; set; }
+        }
 
         public class FirewallRule
         {
@@ -31,6 +44,8 @@ namespace vshield
             public UInt32 ruleId { get; set; }
 
         }
+
+
         public class IpInfo
         {
             public String ipAddress { get; set; }
@@ -51,5 +66,11 @@ namespace vshield
             public String rangeStart { get; set; }
             public String rangeEnd { get; set; }
         }
+
+       
+
+
+
+
 
 }

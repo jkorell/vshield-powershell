@@ -11,9 +11,10 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace vshield
 {
-    [Cmdlet("Get", "FirewallRule")]
-    public class GetFirewallRule : Cmdlet
+    [Cmdlet("Get", "NatRule")]
+    public class GetNatRule : Cmdlet
     {
+
         /// <summary>
         /// SetCertificatePolicy()
         /// RemoteCertiticateValidate() 
@@ -46,6 +47,7 @@ namespace vshield
             get { return _InternalPortGroupMofId; }
             set { _InternalPortGroupMofId = value; }
         }
+
         /// <summary>
         /// Main section of Get-FirewallRule
         /// </summary>
@@ -53,18 +55,26 @@ namespace vshield
         {
             try
             {
-                StringBuilder requestResource       = new StringBuilder();
-                var request                         = new RestRequest();
+                StringBuilder requestResource = new StringBuilder();
+                var request = new RestRequest();
                 SetCertificatePolicy();
-                
-                requestResource.AppendFormat("api/1.0/network/{0}/firewall/rules", _InternalPortGroupMofId);
-                
-                request.Resource                    = requestResource.ToString();
-                var rr_fwrule                       = _Client.Execute<VShieldEdgeConfig>(request);
 
-                WriteObject(rr_fwrule.Data);
+                requestResource.AppendFormat("api/1.0/network/{0}/dnat/rules", _InternalPortGroupMofId);
+
+                request.Resource = requestResource.ToString();
+                var rr_natrule = _Client.Execute<VShieldEdgeConfig>(request);
+
+                WriteObject(rr_natrule.Data, true);
+
+                WriteWarning(rr_natrule.ErrorMessage);
+                WriteWarning(rr_natrule.StatusDescription);
+                WriteWarning(rr_natrule.Content);
+
+
+
             }
             catch (Exception e) { WriteObject("C-Sharp Exception: " + e); }
         }
+
     }
 }

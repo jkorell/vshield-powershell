@@ -24,15 +24,18 @@ namespace vshield
         {
             try
             {
-                String XmlizedString = null;
-                MemoryStream memoryStream = new MemoryStream();
-                XmlSerializer xs = new XmlSerializer(typeof(VShieldEdgeConfig));
+                String XmlizedString        = null;
+                MemoryStream memoryStream   = new MemoryStream();
+                XmlSerializer xs            = new XmlSerializer(typeof(VShieldEdgeConfig));
                 XmlTextWriter xmlTextWriter = new XmlTextWriter(memoryStream, new System.Text.UTF8Encoding());
-                xmlTextWriter.Formatting = Formatting.Indented;
+                xmlTextWriter.Formatting    = Formatting.Indented;
+
                 xs.Serialize(xmlTextWriter, pObject);
-                memoryStream.Position = 0;
-                byte[] memory = memoryStream.ToArray();
-                XmlizedString = Encoding.UTF8.GetString(memory);
+
+                memoryStream.Position       = 0;
+                byte[] memory               = memoryStream.ToArray();
+                XmlizedString               = Encoding.UTF8.GetString(memory);
+
                 return XmlizedString;
             }
             catch (Exception e)
