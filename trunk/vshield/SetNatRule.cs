@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*
+ *  vshield-powershell
+ *   Copyright (C) <2011>  <Joseph Callen>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -146,51 +164,56 @@ namespace vshield
             string[] extIpArray = ParseRange(_extIpAddress);
             string[] extPortArray = ParseRange(_extPort);
 
-            if (intIpArray.Length > 1)
+            try
             {
-                vsec.NATConfig[count - 1].internalIpAddress.IpRange = new IpRange();
-                vsec.NATConfig[count - 1].internalIpAddress.IpRange.rangeStart = intIpArray[0];
-                vsec.NATConfig[count - 1].internalIpAddress.IpRange.rangeEnd = intIpArray[1];
-            }
-            else
-            {
-                vsec.NATConfig[count - 1].internalIpAddress.ipAddress = _intIpAddress;
-            }
+                if (intIpArray.Length > 1)
+                {
+                    vsec.NATConfig[count - 1].internalIpAddress.IpRange = new IpRange();
+                    vsec.NATConfig[count - 1].internalIpAddress.IpRange.rangeStart = intIpArray[0];
+                    vsec.NATConfig[count - 1].internalIpAddress.IpRange.rangeEnd = intIpArray[1];
+                }
+                else
+                {
+                    vsec.NATConfig[count - 1].internalIpAddress.ipAddress = _intIpAddress;
+                }
 
-            if (intPortArray.Length > 1)
-            {
-                vsec.NATConfig[count - 1].internalPort.PortRange = new PortRange();
-                vsec.NATConfig[count - 1].internalPort.PortRange.rangeStart = intPortArray[0];
-                vsec.NATConfig[count - 1].internalPort.PortRange.rangeEnd = intPortArray[1];
+                if (intPortArray.Length > 1)
+                {
+                    vsec.NATConfig[count - 1].internalPort.PortRange = new PortRange();
+                    vsec.NATConfig[count - 1].internalPort.PortRange.rangeStart = intPortArray[0];
+                    vsec.NATConfig[count - 1].internalPort.PortRange.rangeEnd = intPortArray[1];
 
-            }
-            else
-            {
-                vsec.NATConfig[count - 1].internalPort.port = _intPort;
-            }
+                }
+                else
+                {
+                    vsec.NATConfig[count - 1].internalPort.port = _intPort;
+                }
 
-            if (extIpArray.Length > 1)
-            {
-                vsec.NATConfig[count - 1].externalIpAddress.IpRange = new IpRange();
-                vsec.NATConfig[count - 1].externalIpAddress.IpRange.rangeStart = extIpArray[0];
-                vsec.NATConfig[count - 1].externalIpAddress.IpRange.rangeEnd = extIpArray[1];
-            }
-            else
-            {
-                vsec.NATConfig[count - 1].externalIpAddress.ipAddress = _extIpAddress;
-            }
+                if (extIpArray.Length > 1)
+                {
+                    vsec.NATConfig[count - 1].externalIpAddress.IpRange = new IpRange();
+                    vsec.NATConfig[count - 1].externalIpAddress.IpRange.rangeStart = extIpArray[0];
+                    vsec.NATConfig[count - 1].externalIpAddress.IpRange.rangeEnd = extIpArray[1];
+                }
+                else
+                {
+                    vsec.NATConfig[count - 1].externalIpAddress.ipAddress = _extIpAddress;
+                }
 
-            if (extPortArray.Length > 1)
-            {
-                vsec.NATConfig[count - 1].externalPort.PortRange = new PortRange();
-                vsec.NATConfig[count - 1].externalPort.PortRange.rangeStart = extPortArray[0];
-                vsec.NATConfig[count - 1].externalPort.PortRange.rangeEnd = extPortArray[1];
+                if (extPortArray.Length > 1)
+                {
+                    vsec.NATConfig[count - 1].externalPort.PortRange = new PortRange();
+                    vsec.NATConfig[count - 1].externalPort.PortRange.rangeStart = extPortArray[0];
+                    vsec.NATConfig[count - 1].externalPort.PortRange.rangeEnd = extPortArray[1];
 
+                }
+                else
+                {
+                    vsec.NATConfig[count - 1].externalPort.port = _extPort;
+                }
             }
-            else
-            {
-                vsec.NATConfig[count - 1].externalPort.port = _extPort;
-            }
+            catch (Exception e) { WriteObject("C-Sharp Exception: " + e); return null; }
+
             return vsec;
         }
 
