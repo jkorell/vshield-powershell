@@ -62,6 +62,14 @@ namespace vshield
                 request.Resource                    = requestResource.ToString();
                 var rr_fwrule                       = _Client.Execute<VShieldEdgeConfig>(request);
 
+                if (rr_fwrule.StatusCode != HttpStatusCode.OK)
+                {
+                    WriteWarning(rr_fwrule.ErrorMessage);
+                    WriteWarning(rr_fwrule.StatusDescription);
+                    WriteWarning(rr_fwrule.Content);
+                }
+
+                WriteWarning("PowerShell Formatting File Not Implemented Yet");
                 WriteObject(rr_fwrule.Data);
             }
             catch (Exception e) { WriteObject("C-Sharp Exception: " + e); }
