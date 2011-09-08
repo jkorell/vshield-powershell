@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*
+ *  vshield-powershell
+ *   Copyright (C) <2011>  <Joseph Callen>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -177,50 +195,53 @@ namespace vshield
             string[] srcIpArray = ParseRange(_SrcIp);
             string[] srcPortArray = ParseRange(_SrcPort);
 
+            try
+            {
+                if (dstIpArray.Length > 1)
+                {
+                    fwconf.FirewallConfig[count - 1].destinationIpAddress.IpRange = new IpRange();
+                    fwconf.FirewallConfig[count - 1].destinationIpAddress.IpRange.rangeStart = dstIpArray[0];
+                    fwconf.FirewallConfig[count - 1].destinationIpAddress.IpRange.rangeEnd = dstIpArray[1];
+                }
+                else
+                {
+                    fwconf.FirewallConfig[count - 1].destinationIpAddress.ipAddress = _DstIp;
+                }
 
-            if (dstIpArray.Length > 1)
-            {
-                fwconf.FirewallConfig[count - 1].destinationIpAddress.IpRange = new IpRange();
-                fwconf.FirewallConfig[count - 1].destinationIpAddress.IpRange.rangeStart = dstIpArray[0];
-                fwconf.FirewallConfig[count - 1].destinationIpAddress.IpRange.rangeEnd = dstIpArray[1];
-            }
-            else
-            {
-                fwconf.FirewallConfig[count - 1].destinationIpAddress.ipAddress = _DstIp;
-            }
+                if (dstPortArray.Length > 1)
+                {
+                    fwconf.FirewallConfig[count - 1].destinationPort.PortRange = new PortRange();
+                    fwconf.FirewallConfig[count - 1].destinationPort.PortRange.rangeStart = dstPortArray[0];
+                    fwconf.FirewallConfig[count - 1].destinationPort.PortRange.rangeEnd = dstPortArray[1];
+                }
+                else
+                {
+                    fwconf.FirewallConfig[count - 1].destinationPort.port = _DstPort;
+                }
 
-            if (dstPortArray.Length > 1)
-            {
-                fwconf.FirewallConfig[count - 1].destinationPort.PortRange = new PortRange();
-                fwconf.FirewallConfig[count - 1].destinationPort.PortRange.rangeStart = dstPortArray[0];
-                fwconf.FirewallConfig[count - 1].destinationPort.PortRange.rangeEnd = dstPortArray[1];
-            }
-            else
-            {
-                fwconf.FirewallConfig[count - 1].destinationPort.port = _DstPort;
-            }
+                if (srcIpArray.Length > 1)
+                {
+                    fwconf.FirewallConfig[count - 1].sourceIpAddress.IpRange = new IpRange();
+                    fwconf.FirewallConfig[count - 1].sourceIpAddress.IpRange.rangeStart = srcIpArray[0];
+                    fwconf.FirewallConfig[count - 1].sourceIpAddress.IpRange.rangeEnd = srcIpArray[1];
+                }
+                else
+                {
+                    fwconf.FirewallConfig[count - 1].sourceIpAddress.ipAddress = _SrcIp;
+                }
 
-            if (srcIpArray.Length > 1)
-            {
-                fwconf.FirewallConfig[count - 1].sourceIpAddress.IpRange = new IpRange();
-                fwconf.FirewallConfig[count - 1].sourceIpAddress.IpRange.rangeStart = srcIpArray[0];
-                fwconf.FirewallConfig[count - 1].sourceIpAddress.IpRange.rangeEnd = srcIpArray[1];
+                if (srcPortArray.Length > 1)
+                {
+                    fwconf.FirewallConfig[count - 1].sourcePort.PortRange = new PortRange();
+                    fwconf.FirewallConfig[count - 1].sourcePort.PortRange.rangeStart = srcPortArray[0];
+                    fwconf.FirewallConfig[count - 1].sourcePort.PortRange.rangeEnd = srcPortArray[1];
+                }
+                else
+                {
+                    fwconf.FirewallConfig[count - 1].sourcePort.port = _SrcPort;
+                }
             }
-            else
-            {
-                fwconf.FirewallConfig[count - 1].sourceIpAddress.ipAddress = _SrcIp;
-            }
-
-            if (srcPortArray.Length > 1)
-            {
-                fwconf.FirewallConfig[count - 1].sourcePort.PortRange = new PortRange();
-                fwconf.FirewallConfig[count - 1].sourcePort.PortRange.rangeStart = srcPortArray[0];
-                fwconf.FirewallConfig[count - 1].sourcePort.PortRange.rangeEnd = srcPortArray[1];
-            }
-            else
-            {
-                fwconf.FirewallConfig[count - 1].sourcePort.port = _SrcPort;
-            }
+            catch (Exception e) { WriteObject("C-Sharp Exception: " + e); return null; }
 
             return fwconf;
         }
