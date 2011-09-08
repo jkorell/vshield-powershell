@@ -137,23 +137,27 @@ namespace vshield
             IpInfo dip = new IpInfo();
             IpInfo sip = new IpInfo();
 
-            fwrule.destinationIpAddress = dip;
-            fwrule.destinationPort = dpi;
-            fwrule.ruleId = 0;
-            fwrule.sourceIpAddress = sip;
-            fwrule.sourcePort = spi;
+            try
+            {
+                fwrule.destinationIpAddress = dip;
+                fwrule.destinationPort = dpi;
+                fwrule.ruleId = 0;
+                fwrule.sourceIpAddress = sip;
+                fwrule.sourcePort = spi;
 
-            if (_FirewallRules.FirewallConfig.Count > 0)
-            {
-                _FirewallRules.FirewallConfig.Add(fwrule);
-                return _FirewallRules;
+                if (_FirewallRules.FirewallConfig.Count > 0)
+                {
+                    _FirewallRules.FirewallConfig.Add(fwrule);
+                    return _FirewallRules;
+                }
+                else
+                {
+                    fwconf.Add(fwrule);
+                    vsec.FirewallConfig = fwconf;
+                    return vsec;
+                }
             }
-            else
-            {
-                fwconf.Add(fwrule);
-                vsec.FirewallConfig = fwconf;
-                return vsec;
-            }
+            catch (Exception e) { WriteObject("C-Sharp Exception: " + e); return null; }
         }
         /// <summary>
         /// SetObject: Sets the values to the objects in the VShieldEdgeConfig.
@@ -228,14 +232,21 @@ namespace vshield
         /// <returns>string[]</returns>
         private string[] ParseRange(string range)
         {
-
-            string[] bufArray;
-            if (range.Contains('-'))
+            try
             {
-                bufArray = range.Split(new char[] { ' ', '-' });
-                return new string[] { bufArray[0], bufArray[bufArray.Length - 1] };
+                string[] bufArray;
+                if (range.Contains('-'))
+                {
+                    bufArray = range.Split(new char[] { ' ', '-' });
+                    return new string[] { bufArray[0], bufArray[bufArray.Length - 1] };
+                }
+                return new string[] { range };
             }
-            return new string[] { range };
+            catch (Exception e)
+            {
+                WriteObject("C-Sharp Exception: " + e);
+                return null;
+            }
         }
 
         /// <summary>
@@ -257,17 +268,14 @@ namespace vshield
                 request.AddParameter("application/xml", xmlString, ParameterType.RequestBody);
                 var rr_fwrule                       = _Client.Execute(request);
 
-                //WriteObject(xmlString);
-                WriteWarning(rr_fwrule.ErrorMessage);
-                WriteWarning(rr_fwrule.StatusDescription);
-                WriteWarning(rr_fwrule.Content);
+                if (rr_fwrule.StatusCode != HttpStatusCode.NoContent)
+                {
+                    WriteWarning(rr_fwrule.ErrorMessage);
+                    WriteWarning(rr_fwrule.StatusDescription);
+                    WriteWarning(rr_fwrule.Content);
+                }
             }
             catch (Exception e) { WriteObject("C-Sharp Exception: " + e); }
-        }
-
-        private void WriteDebug(VShieldXmlSerialzation xmlSerial)
-        {
-            throw new NotImplementedException();
         }
     }
 }

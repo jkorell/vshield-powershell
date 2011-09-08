@@ -112,23 +112,26 @@ namespace vshield
             PortInfo epi = new PortInfo();
             IpInfo iip = new IpInfo();
             IpInfo eip = new IpInfo();
-
-            natRule.externalIpAddress = eip;
-            natRule.externalPort = epi;
-            natRule.internalIpAddress = iip;
-            natRule.internalPort = ipi;
-
-            if (_NatRules.NATConfig.Count > 0)
+            try
             {
-                _NatRules.NATConfig.Add(natRule);
-                return _NatRules;
+                natRule.externalIpAddress = eip;
+                natRule.externalPort = epi;
+                natRule.internalIpAddress = iip;
+                natRule.internalPort = ipi;
+
+                if (_NatRules.NATConfig.Count > 0)
+                {
+                    _NatRules.NATConfig.Add(natRule);
+                    return _NatRules;
+                }
+                else
+                {
+                    natConfig.Add(natRule);
+                    vsec.NATConfig = natConfig;
+                    return vsec;
+                }
             }
-            else
-            {
-                natConfig.Add(natRule);
-                vsec.NATConfig = natConfig;
-                return vsec;
-            }
+            catch (Exception e) { WriteObject("C-Sharp Exception: " + e); return null; }
             
         }
 
@@ -200,13 +203,21 @@ namespace vshield
         /// <returns>string[]</returns>
         private string[] ParseRange(string range)
         {
-            string[] bufArray;
-            if (range.Contains('-'))
+            try
             {
-                bufArray = range.Split(new char[] { ' ', '-' });
-                return new string[] { bufArray[0], bufArray[bufArray.Length - 1] };
+                string[] bufArray;
+                if (range.Contains('-'))
+                {
+                    bufArray = range.Split(new char[] { ' ', '-' });
+                    return new string[] { bufArray[0], bufArray[bufArray.Length - 1] };
+                }
+                return new string[] { range };
             }
-            return new string[] { range };
+            catch (Exception e)
+            {
+                WriteObject("C-Sharp Exception: " + e);
+                return null;
+            }
         }
 
         protected override void ProcessRecord()
