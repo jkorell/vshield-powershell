@@ -77,7 +77,20 @@ namespace vshield
                 var request = new RestRequest();
                 SetCertificatePolicy();
 
-                requestResource.AppendFormat("api/1.0/network/{0}/dnat/rules", _InternalPortGroupMofId);
+                int version = vshieldsnapin.ApiVersion(_InternalPortGroupMofId, _Client);
+
+                string apiVersionText = (new StringBuilder().AppendFormat("API Version: {0}", version)).ToString();
+
+                WriteWarning(apiVersionText);
+
+                if (version == 1)
+                    requestResource.AppendFormat("api/1.0/network/{0}/dnat/rules", _InternalPortGroupMofId);
+                if (version == 2)
+                    requestResource.AppendFormat("api/2.0/networks/{0}/edge", _InternalPortGroupMofId);
+                if (version <= 0)
+                    throw new System.ArgumentException("API cannot be 0 or -1", "version");
+
+                
 
                 request.Resource = requestResource.ToString();
                 var rr_natrule = _Client.Execute<VShieldEdgeConfig>(request);

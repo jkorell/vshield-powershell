@@ -26,19 +26,73 @@ using System.Management.Automation;
 using System.ComponentModel;
 
 using RestSharp;
+using System.Net;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace vshield
 {
     [RunInstaller(true)]
     public class vshieldsnapin : PSSnapIn
     {
+
+        public static void SetCertificatePolicy()
+        {
+            ServicePointManager.ServerCertificateValidationCallback += RemoteCertificateValidate;
+        }
+        private static bool RemoteCertificateValidate(object sender, X509Certificate cert, X509Chain chain, SslPolicyErrors error)
+        {
+            return true;
+        }
+
+
+        public static int ApiVersion(string _InternalPortGroupMofId, RestClient _Client)
+        {
+            try
+            {
+                //https://<vsm-ip>/api/versions/edge/dvportgroup-63
+
+                StringBuilder requestResource = new StringBuilder();
+                var request = new RestRequest();
+                SetCertificatePolicy();
+
+                requestResource.AppendFormat("api/versions/edge/{0}", _InternalPortGroupMofId);
+
+                request.Resource = requestResource.ToString();
+                var rr_ver = _Client.Execute(request);
+
+                if (rr_ver.StatusCode != HttpStatusCode.OK)
+                {
+                    //WriteWarning(rr_fwrule.ErrorMessage);
+                    //WriteWarning(rr_fwrule.StatusDescription);
+                    //WriteWarning(rr_fwrule.Content);
+
+                    //we are going to assume <- yeah, that the API version is 1 if Http returns not OK
+                    return 1;
+                }
+                else
+                {
+                    return 2;
+                }
+
+                //WriteWarning("PowerShell Formatting File Not Implemented Yet");
+                //WriteObject(rr_fwrule.Data);
+            }
+            catch (Exception e) { return -1; }
+
+            //we should never get here
+            return 0;
+        }
+
+
+
         public override string Description
         {
             get { return "This Windows PowerShell snap-in contains Windows PowerShell \r\n cmdlets for managing vSphere vShield."; }
         }
         public override string Name
         {
-            get { return "vShield"; }
+            get { return "vshieldsnapin"; }
         }
         public override string Vendor
         {
